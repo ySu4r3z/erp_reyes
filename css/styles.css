@@ -1,0 +1,76 @@
+/* ============================================================
+   Sistema de Control de Pagos - Hoja de estilos principal
+   ------------------------------------------------------------
+   Organizada por secciones y basada en variables (design tokens)
+   para mantener una identidad gráfica consistente en todo el
+   proyecto y facilitar el crecimiento a nuevas pantallas.
+   ============================================================ */
+
+/* ------------------------------------------------------------
+   1. Variables globales (Design Tokens)
+   ------------------------------------------------------------ */
+:root {
+  /* Paleta de colores: azul oscuro + blanco */
+  --color-primary: #0f2c59;        /* Azul oscuro principal */
+  --color-primary-dark: #0a2140;   /* Azul aún más oscuro (hover) */
+  --color-primary-light: #1c4a8a;  /* Azul medio (acentos) */
+  --color-secondary: #ffffff;      /* Blanco */
+
+  /* Neutros */
+  --color-bg: #eef2f8;             /* Fondo general */
+  --color-surface: #ffffff;        /* Superficie de tarjetas */
+  --color-text: #1a2233;           /* Texto principal */
+  --color-text-muted: #6b7688;     /* Texto secundario */
+  --color-border: #d9e0ec;         /* Bordes de inputs */
+
+  /* Estados */
+  --color-error: #d63b3b;          /* Error / validación */
+  --color-success: #1f9d5b;        /* Éxito */
+
+  /* Tipografía */
+  --font-base: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+  /* Bordes y sombras */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --shadow-sm: 0 2px 8px rgba(15, 44, 89, 0.06);
+  --shadow-md: 0 10px 30px rgba(15, 44, 89, 0.12);
+
+  /* Transiciones */
+  --transition: 0.2s ease;
+}
+
+/* ------------------------------------------------------------
+   2. Reset básico y estilos base
+   ------------------------------------------------------------ */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+/* Asegura que el atributo [hidden] siempre oculte el elemento,
+   incluso cuando un contenedor usa display:flex */
+[hidden] {
+  display: none !important;
+}
+
+body {
+  font-family: var(--font-base);
+  color: var(--color-text);
+  background-color: var(--color-bg);
+  /* Fondo con degradado corporativo sutil */
+  background-image:
+    radial-gradient(circle at top left, rgba(28, 74, 138, 0.12), transparent 45%),
+    radial-gradient(circle at bottom right, rgba(15, 44, 89, 0.1), transparent 45%);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}

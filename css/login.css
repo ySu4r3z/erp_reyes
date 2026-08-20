@@ -1,0 +1,349 @@
+
+/* ------------------------------------------------------------
+   1. Layout de la página de login
+   ------------------------------------------------------------ */
+.login-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+/* ------------------------------------------------------------
+   2. Tarjeta de inicio de sesión
+   ------------------------------------------------------------ */
+.login-card {
+  width: 100%;
+  max-width: 420px;
+  background-color: var(--color-surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  padding: 40px 36px;
+  animation: fade-in 0.5s ease;
+}
+
+/* Animación suave de entrada */
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ------------------------------------------------------------
+   3. Encabezado (logo + títulos)
+   ------------------------------------------------------------ */
+.login-header {
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+.login-logo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  margin-bottom: 16px;
+  border-radius: var(--radius-md);
+  background-color: var(--color-primary);
+  color: var(--color-secondary);
+  box-shadow: var(--shadow-sm);
+}
+
+.login-title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  margin-bottom: 6px;
+}
+
+.login-subtitle {
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+}
+
+/* ------------------------------------------------------------
+   4. Mensajes globales (error / éxito)
+   ------------------------------------------------------------ */
+.form-message {
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  font-size: 0.875rem;
+  margin-bottom: 20px;
+  border: 1px solid transparent;
+}
+
+.form-message.is-error {
+  background-color: #fdecec;
+  color: var(--color-error);
+  border-color: #f6c9c9;
+}
+
+.form-message.is-success {
+  background-color: #e8f7ef;
+  color: var(--color-success);
+  border-color: #bfe6cf;
+}
+
+/* ------------------------------------------------------------
+   5. Formulario y campos
+   ------------------------------------------------------------ */
+.form-group {
+  margin-bottom: 18px;
+}
+
+.form-label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 500;
+  margin-bottom: 7px;
+  color: var(--color-text);
+}
+
+/* Contenedor del input para posicionar iconos */
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-icon {
+  position: absolute;
+  left: 14px;
+  display: flex;
+  color: var(--color-text-muted);
+  pointer-events: none;
+}
+
+.form-input {
+  width: 100%;
+  padding: 12px 14px 12px 42px;   /* espacio a la izquierda para el icono */
+  font-family: inherit;
+  font-size: 0.95rem;
+  color: var(--color-text);
+  background-color: #f8fafd;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  transition: border-color var(--transition), box-shadow var(--transition),
+              background-color var(--transition);
+}
+
+.form-input::placeholder {
+  color: #9aa4b5;
+}
+
+.form-input:focus {
+  outline: none;
+  background-color: var(--color-surface);
+  border-color: var(--color-primary-light);
+  box-shadow: 0 0 0 3px rgba(28, 74, 138, 0.15);
+}
+
+/* Estado de campo inválido */
+.form-input.is-invalid {
+  border-color: var(--color-error);
+  background-color: #fef7f7;
+}
+
+.form-input.is-invalid:focus {
+  box-shadow: 0 0 0 3px rgba(214, 59, 59, 0.15);
+}
+
+/* Botón mostrar/ocultar contraseña */
+.toggle-password {
+  position: absolute;
+  right: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  background: transparent;
+  border: none;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  transition: color var(--transition), background-color var(--transition);
+}
+
+.toggle-password:hover {
+  color: var(--color-primary);
+  background-color: #eef2f8;
+}
+
+/* Mensaje de error por campo */
+.field-error {
+  display: block;
+  min-height: 16px;
+  margin-top: 6px;
+  font-size: 0.78rem;
+  color: var(--color-error);
+}
+
+/* ------------------------------------------------------------
+   6. Opciones: recordarme + olvidaste contraseña
+   ------------------------------------------------------------ */
+.form-options {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+/* Checkbox personalizado */
+.checkbox {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.checkbox input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.checkbox-box {
+  width: 18px;
+  height: 18px;
+  border: 1px solid var(--color-border);
+  border-radius: 5px;
+  background-color: var(--color-surface);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color var(--transition), border-color var(--transition);
+}
+
+/* Palomita del checkbox */
+.checkbox-box::after {
+  content: '';
+  width: 5px;
+  height: 9px;
+  border: solid var(--color-secondary);
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg) scale(0);
+  transition: transform var(--transition);
+}
+
+.checkbox input:checked + .checkbox-box {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.checkbox input:checked + .checkbox-box::after {
+  transform: rotate(45deg) scale(1);
+}
+
+.checkbox input:focus-visible + .checkbox-box {
+  box-shadow: 0 0 0 3px rgba(28, 74, 138, 0.2);
+}
+
+.checkbox-label {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+}
+
+.forgot-link {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--color-primary-light);
+  text-decoration: none;
+  transition: color var(--transition);
+}
+
+.forgot-link:hover {
+  color: var(--color-primary);
+  text-decoration: underline;
+}
+
+/* ------------------------------------------------------------
+   7. Botón principal + spinner de carga
+   ------------------------------------------------------------ */
+.btn-primary {
+  position: relative;
+  width: 100%;
+  padding: 13px 16px;
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--color-secondary);
+  background-color: var(--color-primary);
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: background-color var(--transition), transform var(--transition);
+}
+
+.btn-primary:hover {
+  background-color: var(--color-primary-dark);
+}
+
+.btn-primary:active {
+  transform: scale(0.99);
+}
+
+.btn-primary:disabled {
+  opacity: 0.75;
+  cursor: not-allowed;
+}
+
+/* Spinner (oculto por defecto) */
+.spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-top-color: var(--color-secondary);
+  border-radius: 50%;
+  display: none;
+  animation: spin 0.7s linear infinite;
+}
+
+/* Cuando el botón está cargando, muestra el spinner */
+.btn-primary.is-loading .spinner {
+  display: inline-block;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ------------------------------------------------------------
+   8. Pie de la tarjeta
+   ------------------------------------------------------------ */
+.login-footer {
+  margin-top: 26px;
+  text-align: center;
+}
+
+.login-footer p {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+}
+
+/* ------------------------------------------------------------
+   9. Responsive (tablet y móvil)
+   ------------------------------------------------------------ */
+@media (max-width: 480px) {
+  .login-card {
+    padding: 32px 22px;
+    border-radius: var(--radius-md);
+  }
+
+  .login-title {
+    font-size: 1.2rem;
+  }
+
+  .form-options {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
