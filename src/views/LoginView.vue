@@ -76,6 +76,7 @@ const password = ref('');
 const message = ref('');
 const year = new Date().getFullYear();
 
+// Valida los campos mínimos antes de actualizar el store y navegar al dashboard.
 function handleSubmit() {
   if (!email.value || !password.value) {
     message.value = 'Completa correo y contraseña.';

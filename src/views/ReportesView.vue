@@ -1,5 +1,6 @@
 <template>
   <!-- Vista de reportes con indicadores, filtros y listado de reportes recientes -->
+  <!-- Indicadores y reportes de ejemplo hasta integrar la fuente real de información. -->
   <section class="panel">
     <div class="panel-head">
       <div>

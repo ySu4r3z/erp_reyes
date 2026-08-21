@@ -18,6 +18,7 @@ const routes = [
   {
     path: '/',
     component: AppLayout,
+    // Todas las rutas hijas reutilizan el sidebar y la barra superior del layout.
     children: [
       {
         path: 'dashboard',
@@ -49,6 +50,7 @@ const routes = [
 ];
 
 const router = createRouter({
+  // createWebHistory produce URLs limpias; el servidor debe redirigirlas a index.html.
   history: createWebHistory(),
   routes
 });

@@ -80,6 +80,7 @@
         </header>
 
         <main class="content" role="main">
+          <!-- Cada ruta hija se renderiza dentro del área común del panel. -->
           <router-view />
         </main>
       </div>
@@ -99,6 +100,7 @@ const sidebarOpen = ref(false);
 
 // Cierra la sesión y regresa al login.
 function logoutAndGoHome() {
+  // El estado de autenticación se limpiará cuando el logout se conecte al store/API.
   sidebarOpen.value = false;
   router.push('/');
 }

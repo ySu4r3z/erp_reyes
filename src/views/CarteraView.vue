@@ -1,5 +1,6 @@
 <template>
   <!-- Vista de cartera con resumen de saldo, clientes activos y movimientos recientes -->
+  <!-- Resumen visual de cartera; sus acciones se conectarán al backend posteriormente. -->
   <section class="panel">
     <div class="panel-head">
       <div>

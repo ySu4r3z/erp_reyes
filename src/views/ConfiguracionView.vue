@@ -1,5 +1,6 @@
 <template>
   <!-- Vista de configuración para ajustes de empresa y datos de contacto -->
+  <!-- Formulario visual de configuración; los campos aún no persisten cambios. -->
   <section class="panel">
     <div class="panel-head">
       <div>

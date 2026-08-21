@@ -131,6 +131,7 @@
 import { onMounted, ref } from 'vue';
 import { Chart, BarController, CategoryScale, LinearScale, BarElement, Tooltip, Legend } from 'chart.js';
 
+// Chart.js requiere registrar explícitamente los módulos usados por el gráfico de barras.
 Chart.register(BarController, CategoryScale, LinearScale, BarElement, Tooltip, Legend);
 
 const chartCanvas = ref(null);
@@ -148,6 +149,7 @@ const transactions = [
   { client: 'Ana Torres', reference: 'PAY-1022', date: '2026-07-22', method: 'Efectivo', amount: '$420', status: 'Completado' }
 ];
 
+// El canvas solo existe después del montaje; por eso la instancia se crea en onMounted.
 onMounted(() => {
   if (chartCanvas.value) {
     new Chart(chartCanvas.value, {
