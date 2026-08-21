@@ -6,7 +6,7 @@
         <h2 class="panel-title">Deportistas</h2>
         <p class="panel-subtitle">Administra los datos, acudientes y situación de cada niño.</p>
       </div>
-      <button class="btn-primary">+ Nuevo deportista</button>
+      <button type="button" class="btn-primary" @click="isFormOpen = true">+ Nuevo deportista</button>
     </div>
 
     <div class="deportistas-toolbar">
@@ -84,22 +84,37 @@
               >{{ deportista.status }}</span>
             </td>
             <td class="ta-right">
-              <button class="link-button">Registrar pago</button>
+              <div class="row-actions">
+                <button type="button" class="link-button" @click="openEditForm(deportista)">Editar</button>
+                <button type="button" class="link-button link-button-danger" @click="removeDeportista(deportista)">Eliminar</button>
+              </div>
             </td>
           </tr>
         </tbody>
       </table>
     </div>
   </section>
+
+  <DeportistaFormModal
+    v-if="isFormOpen"
+    :categories="categoryOptions"
+    :initial-data="selectedDeportista"
+    @close="closeForm"
+    @saved="saveDeportista"
+  />
 </template>
 
 <script setup>
 import { computed, ref } from 'vue';
+import DeportistaFormModal from '../components/deportistas/DeportistaFormModal.vue';
 
 const search = ref('');
 const categoryFilter = ref('');
 const statusFilter = ref('');
+const isFormOpen = ref(false);
+const selectedDeportista = ref(null);
 
+// Datos locales de demostración; posteriormente pueden reemplazarse por datos de una API.
 const deportistas = ref([
   { id: '100241', name: 'Salomé Solórzano', initials: 'SS', category: 'Mini', guardian: 'Laura Solórzano', guardianPhone: '310 456 8021', dueDate: '23 jul. 2026', balance: '$ 65.000', status: 'En mora', avatarColor: '#d95c82' },
   { id: '100242', name: 'Sara Sepúlveda', initials: 'SP', category: 'Juvenil', guardian: 'Carlos Sepúlveda', guardianPhone: '312 883 9012', dueDate: '20 ago. 2026', balance: '$ 0', status: 'Al día', avatarColor: '#de9d4b' },
@@ -125,4 +140,55 @@ const filteredDeportistas = computed(() => {
     return matchesSearch && matchesCategory && matchesStatus;
   });
 });
+
+// Inserta los nuevos registros al inicio para que sean visibles inmediatamente.
+function addDeportista(deportista) {
+  deportistas.value.unshift(deportista);
+}
+
+// Guarda el registro seleccionado para que el modal cargue sus datos actuales.
+function openEditForm(deportista) {
+  selectedDeportista.value = deportista;
+  isFormOpen.value = true;
+}
+
+function saveDeportista(deportista) {
+  const existingIndex = deportistas.value.findIndex((item) => item.id === deportista.id);
+
+  // Si el id ya existe se actualiza; de lo contrario se trata de un registro nuevo.
+  if (existingIndex === -1) {
+    addDeportista(deportista);
+  } else {
+    deportistas.value[existingIndex] = deportista;
+  }
+
+  closeForm();
+}
+
+function closeForm() {
+  isFormOpen.value = false;
+  selectedDeportista.value = null;
+}
+
+// La confirmación evita eliminar registros por accidente y el filtro actualiza la tabla reactivamente.
+function removeDeportista(deportista) {
+  const confirmed = window.confirm(`¿Eliminar a ${deportista.name}? Esta acción no se puede deshacer.`);
+
+  if (confirmed) {
+    deportistas.value = deportistas.value.filter((item) => item.id !== deportista.id);
+  }
+}
 </script>
+
+<style scoped>
+.row-actions {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.link-button-danger {
+  color: var(--color-error);
+}
+</style>
