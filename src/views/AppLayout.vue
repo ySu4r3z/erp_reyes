@@ -26,6 +26,9 @@
           <router-link to="/deportistas" class="nav-item" active-class="is-active" exact-active-class="is-active" @click="closeSidebar">
             <span>Deportistas</span>
           </router-link>
+          <router-link to="/pagos-y-recibos" class="nav-item" active-class="is-active" exact-active-class="is-active" @click="closeSidebar">
+            <span>Pagos y recibos</span>
+          </router-link>
           <router-link to="/cartera" class="nav-item" active-class="is-active" exact-active-class="is-active" @click="closeSidebar">
             <span>Cartera</span>
           </router-link>

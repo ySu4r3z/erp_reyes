@@ -6,6 +6,7 @@ import DeportistasView from '../views/DeportistasView.vue';
 import CarteraView from '../views/CarteraView.vue';
 import ReportesView from '../views/ReportesView.vue';
 import ConfiguracionView from '../views/ConfiguracionView.vue';
+import PagosRecibosView from '../views/PagosRecibosView.vue';
 
 // Definición del árbol de rutas de la aplicación.
 // El layout principal `AppLayout` envuelve las rutas internas de la aplicación.
@@ -24,6 +25,11 @@ const routes = [
         path: 'dashboard',
         name: 'dashboard',
         component: DashboardHomeView
+      },
+      {
+        path: 'pagos-y-recibos',
+        name: 'pagos-y-recibos',
+        component: PagosRecibosView
       },
       {
         path: 'deportistas',
