@@ -181,6 +181,68 @@ function removeDeportista(deportista) {
 </script>
 
 <style scoped>
+.panel-deportistas {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.deportistas-toolbar {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 16px;
+  align-items: center;
+}
+
+.deportistas-search {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background-color: #f8fafd;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px 12px 44px;
+}
+
+.deportistas-search .input-icon {
+  position: absolute;
+  left: 14px;
+  display: flex;
+  color: var(--color-text-muted);
+}
+
+.deportistas-search input {
+  width: 100%;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-family: inherit;
+  font-size: 0.95rem;
+  color: var(--color-text);
+}
+
+.deportistas-filters {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.deportistas-filters select {
+  min-width: 180px;
+  padding: 12px 14px;
+  font-family: inherit;
+  font-size: 0.95rem;
+  color: var(--color-text);
+  background-color: #fff;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+}
+
+.field-secondary {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+}
+
 .row-actions {
   display: inline-flex;
   align-items: center;
@@ -190,5 +252,15 @@ function removeDeportista(deportista) {
 
 .link-button-danger {
   color: var(--color-error);
+}
+
+@media (max-width: 900px) {
+  .deportistas-toolbar {
+    grid-template-columns: 1fr;
+  }
+
+  .deportistas-filters {
+    width: 100%;
+  }
 }
 </style>
