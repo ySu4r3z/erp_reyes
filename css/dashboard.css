@@ -806,6 +806,12 @@
   box-shadow: var(--shadow-sm);
 }
 
+.summary-meta {
+  align-items: center;
+  min-width: 0;
+  text-align: center;
+}
+
 .summary-icon {
   width: 48px;
   height: 48px;
@@ -966,6 +972,10 @@
 }
 
 @media (max-width: 900px) {
+  .summary-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .deportistas-toolbar {
     grid-template-columns: 1fr;
   }
@@ -1169,6 +1179,7 @@
   .content { padding: 16px; }
   .topbar { padding: 0 16px; }
   .stats-grid { grid-template-columns: 1fr; }
+  .summary-grid { grid-template-columns: 1fr; }
   .user-meta { display: none; }
   .topbar-subtitle { display: none; }
   .panel-head {

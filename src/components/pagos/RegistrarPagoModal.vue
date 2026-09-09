@@ -260,6 +260,7 @@ onMounted(async () => {
   width: min(100%, 780px);
   max-height: calc(100vh - 40px);
   overflow-y: auto;
+  overflow-x: hidden;
   background: var(--color-surface);
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-md);
@@ -299,6 +300,7 @@ onMounted(async () => {
   line-height: 1.1;
   color: var(--color-primary);
   font-weight: 800;
+  overflow-wrap: anywhere;
 }
 
 .payment-step {
@@ -404,6 +406,13 @@ onMounted(async () => {
   min-width: 0;
 }
 
+.athlete-main strong,
+.option-copy strong,
+.receipt-summary-item strong,
+.receipt-issuer-line strong {
+  overflow-wrap: anywhere;
+}
+
 .athlete-main strong {
   color: var(--color-text);
   font-size: 1.05rem;
@@ -417,6 +426,9 @@ onMounted(async () => {
   display: flex;
   gap: 8px;
   align-items: center;
+  flex-wrap: wrap;
+  min-width: 0;
+  overflow-wrap: anywhere;
   color: var(--color-text-muted);
   font-size: 0.82rem;
 }
@@ -482,6 +494,7 @@ onMounted(async () => {
   display: flex;
   flex-direction: column;
   gap: 4px;
+  min-width: 0;
 }
 
 .option-copy strong {
@@ -497,6 +510,7 @@ onMounted(async () => {
   font-weight: 700;
   color: var(--color-text);
   font-size: 1.05rem;
+  white-space: nowrap;
 }
 
 .add-concept-button {
@@ -701,6 +715,7 @@ onMounted(async () => {
   display: flex;
   flex-direction: column;
   gap: 2px;
+  min-width: 0;
 }
 
 .receipt-kicker {
@@ -715,6 +730,7 @@ onMounted(async () => {
   line-height: 1.1;
   font-weight: 800;
   color: var(--color-primary);
+  overflow-wrap: anywhere;
 }
 
 .receipt-meta-line {
@@ -821,6 +837,7 @@ onMounted(async () => {
   display: flex;
   justify-content: space-between;
   gap: 12px;
+  flex-wrap: wrap;
   padding: 8px 0;
   border-bottom: 1px solid rgba(15, 44, 89, 0.12);
   color: var(--color-text-muted);
@@ -914,12 +931,47 @@ onMounted(async () => {
 }
 
 @media (max-width: 640px) {
+  .modal-backdrop {
+    padding: 8px;
+    place-items: start center;
+  }
+
+  .modal-card {
+    max-height: calc(100vh - 16px);
+  }
+
+  .modal-header {
+    padding: 14px 16px 10px;
+  }
+
+  .payment-form {
+    padding: 0 16px 18px;
+  }
+
   .field-row {
     grid-template-columns: 1fr;
   }
 
   .payment-title {
     font-size: 1.8rem;
+  }
+
+  .selected-athlete {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .athlete-balance {
+    width: 100%;
+    padding-left: 48px;
+  }
+
+  .invoice-option {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .option-amount {
+    grid-column: 2;
   }
 
   .receipt-header {
@@ -929,6 +981,10 @@ onMounted(async () => {
 
   .receipt-summary-grid {
     grid-template-columns: 1fr;
+  }
+
+  .receipt-panel {
+    padding: 16px 14px 18px;
   }
 
   .receipt-table-head {
@@ -944,6 +1000,11 @@ onMounted(async () => {
   .receipt-row span:last-child,
   .receipt-row span:nth-child(3) {
     text-align: left;
+  }
+
+  .receipt-issuer-line {
+    align-items: flex-start;
+    flex-direction: column;
   }
 
   .modal-actions,
