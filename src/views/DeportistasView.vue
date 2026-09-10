@@ -6,7 +6,7 @@
         <h2 class="panel-title">Deportistas</h2>
         <p class="panel-subtitle">Administra los datos, acudientes y situación de cada niño.</p>
       </div>
-      <button type="button" class="btn-primary" @click="isFormOpen = true">+ Nuevo deportista</button>
+      <button type="button" class="btn-primary btn-new-deportista" @click="isFormOpen = true">+ Nuevo deportista</button>
     </div>
 
     <div class="deportistas-toolbar">
@@ -47,12 +47,12 @@
         <thead>
           <tr>
             <th>Deportista</th>
-            <th>Categoría</th>
+            <th>Sede</th>
             <th>Acudiente</th>
             <th>Vencimiento</th>
             <th class="ta-right">Saldo</th>
             <th>Estado</th>
-            <th></th>
+            <th class="ta-right">Acción</th>
           </tr>
         </thead>
         <tbody>
@@ -66,7 +66,10 @@
                 </div>
               </div>
             </td>
-            <td>{{ deportista.category }}</td>
+            <td>
+              <div>{{ deportista.site || 'San Valentín' }}</div>
+              <div class="field-secondary">{{ deportista.category }}</div>
+            </td>
             <td>
               <div>{{ deportista.guardian }}</div>
               <div class="field-secondary">{{ deportista.guardianPhone }}</div>
@@ -79,14 +82,17 @@
                 :class="{
                   'badge-danger': deportista.status === 'En mora',
                   'badge-success': deportista.status === 'Al día',
-                  'badge-warning': deportista.status === 'Próximo'
+                  'badge-warning': deportista.status === 'Próximo',
+                  'badge-inactive': deportista.status === 'Inactivo'
                 }"
               >{{ deportista.status }}</span>
             </td>
-            <td class="ta-right">
+            <td class="ta-right action-cell">
               <div class="row-actions">
-                <button type="button" class="link-button" @click="openEditForm(deportista)">Editar</button>
-                <button type="button" class="link-button link-button-danger" @click="removeDeportista(deportista)">Eliminar</button>
+                <button type="button" class="link-button btn-update" @click="openEditForm(deportista)">Actualizar</button>
+                <button type="button" class="link-button" @click="registerPayment(deportista)">Registrar pago</button>
+                <button type="button" class="link-button" @click="viewWallet(deportista)">Ver cartera</button>
+                <button type="button" class="link-button link-button-danger" @click="deactivateDeportista(deportista)">Inactivar</button>
               </div>
             </td>
           </tr>
@@ -106,8 +112,10 @@
 
 <script setup>
 import { computed, ref } from 'vue';
+import { useRouter } from 'vue-router';
 import DeportistaFormModal from '../components/deportistas/DeportistaFormModal.vue';
 
+const router = useRouter();
 const search = ref('');
 const categoryFilter = ref('');
 const statusFilter = ref('');
@@ -116,12 +124,12 @@ const selectedDeportista = ref(null);
 
 // Datos locales de demostración; posteriormente pueden reemplazarse por datos de una API.
 const deportistas = ref([
-  { id: '100241', name: 'Salomé Solórzano', initials: 'SS', category: 'Mini', guardian: 'Laura Solórzano', guardianPhone: '310 456 8021', dueDate: '23 jul. 2026', balance: '$ 65.000', status: 'En mora', avatarColor: '#d95c82' },
-  { id: '100242', name: 'Sara Sepúlveda', initials: 'SP', category: 'Juvenil', guardian: 'Carlos Sepúlveda', guardianPhone: '312 883 9012', dueDate: '20 ago. 2026', balance: '$ 0', status: 'Al día', avatarColor: '#de9d4b' },
-  { id: '100243', name: 'Samuel Hinestroza', initials: 'SH', category: 'Infantil', guardian: 'María Hinestroza', guardianPhone: '315 201 6407', dueDate: '28 jul. 2026', balance: '$ 0', status: 'Próximo', avatarColor: '#3b7bb1' },
-  { id: '100244', name: 'Valentina García', initials: 'VG', category: 'Premini', guardian: 'Mónica García', guardianPhone: '301 771 2045', dueDate: '15 jun. 2026', balance: '$ 110.000', status: 'En mora', avatarColor: '#7b5fc8' },
-  { id: '100245', name: 'Martín Rojas', initials: 'MR', category: 'Mini', guardian: 'Diana Rojas', guardianPhone: '316 720 4511', dueDate: '02 ago. 2026', balance: '$ 0', status: 'Al día', avatarColor: '#1f9d5b' },
-  { id: '100246', name: 'Luciana Pérez', initials: 'LP', category: 'Infantil', guardian: 'Andrés Pérez', guardianPhone: '300 610 9928', dueDate: '09 jul. 2026', balance: '$ 45.000', status: 'En mora', avatarColor: '#c47a65' }
+  { id: '100241', name: 'Salomé Solórzano', initials: 'SS', category: 'Mini', site: 'San Valentín', guardian: 'Laura Solórzano', guardianPhone: '310 456 8021', dueDate: '23 jul. 2026', balance: '$ 65.000', status: 'En mora', avatarColor: '#d95c82' },
+  { id: '100242', name: 'Sara Sepúlveda', initials: 'SP', category: 'Juvenil', site: 'San Valentín', guardian: 'Carlos Sepúlveda', guardianPhone: '312 883 9012', dueDate: '20 ago. 2026', balance: '$ 0', status: 'Al día', avatarColor: '#de9d4b' },
+  { id: '100243', name: 'Samuel Hinestroza', initials: 'SH', category: 'Infantil', site: 'San Valentín', guardian: 'María Hinestroza', guardianPhone: '315 201 6407', dueDate: '28 jul. 2026', balance: '$ 0', status: 'Próximo', avatarColor: '#3b7bb1' },
+  { id: '100244', name: 'Valentina García', initials: 'VG', category: 'Premini', site: 'San Valentín', guardian: 'Mónica García', guardianPhone: '301 771 2045', dueDate: '15 jun. 2026', balance: '$ 110.000', status: 'En mora', avatarColor: '#7b5fc8' },
+  { id: '100245', name: 'Martín Rojas', initials: 'MR', category: 'Mini', site: 'San Valentín', guardian: 'Diana Rojas', guardianPhone: '316 720 4511', dueDate: '02 ago. 2026', balance: '$ 0', status: 'Al día', avatarColor: '#1f9d5b' },
+  { id: '100246', name: 'Luciana Pérez', initials: 'LP', category: 'Infantil', site: 'San Valentín', guardian: 'Andrés Pérez', guardianPhone: '300 610 9928', dueDate: '09 jul. 2026', balance: '$ 45.000', status: 'En mora', avatarColor: '#c47a65' }
 ]);
 
 const categoryOptions = computed(() => {
@@ -170,12 +178,19 @@ function closeForm() {
   selectedDeportista.value = null;
 }
 
-// La confirmación evita eliminar registros por accidente y el filtro actualiza la tabla reactivamente.
-function removeDeportista(deportista) {
-  const confirmed = window.confirm(`¿Eliminar a ${deportista.name}? Esta acción no se puede deshacer.`);
+function registerPayment(deportista) {
+  router.push({ name: 'pagos-y-recibos', query: { deportistaId: deportista.id } });
+}
+
+function viewWallet(deportista) {
+  router.push({ name: 'cartera', query: { deportistaId: deportista.id } });
+}
+
+function deactivateDeportista(deportista) {
+  const confirmed = window.confirm(`¿Inactivar a ${deportista.name}?`);
 
   if (confirmed) {
-    deportistas.value = deportistas.value.filter((item) => item.id !== deportista.id);
+    deportista.status = 'Inactivo';
   }
 }
 </script>
@@ -185,6 +200,15 @@ function removeDeportista(deportista) {
   display: flex;
   flex-direction: column;
   gap: 18px;
+}
+
+.btn-new-deportista {
+  width: auto;
+  min-width: 180px;
+  padding: 11px 18px;
+  border-radius: 10px;
+  font-weight: 700;
+  box-shadow: 0 10px 18px rgba(15, 44, 89, 0.12);
 }
 
 .deportistas-toolbar {
@@ -239,15 +263,70 @@ function removeDeportista(deportista) {
 }
 
 .field-secondary {
-  font-size: 0.8rem;
+  font-size: 0.72rem;
   color: var(--color-text-muted);
+}
+
+.data-table {
+  min-width: 820px;
+}
+
+.data-table th {
+  padding: 9px 10px;
+  font-size: 0.67rem;
+}
+
+.data-table td {
+  padding: 10px;
+  font-size: 0.82rem;
+  vertical-align: middle;
+}
+
+.cell-client {
+  gap: 8px;
+}
+
+.cell-client strong {
+  font-size: 0.82rem;
+}
+
+.cell-avatar {
+  width: 30px;
+  height: 30px;
+  font-size: 0.68rem;
+}
+
+.cell-amount {
+  font-size: 0.82rem;
+}
+
+.badge {
+  padding: 4px 9px;
+  font-size: 0.68rem;
+}
+
+.badge-inactive {
+  color: var(--color-text-muted);
+  background-color: rgba(107, 118, 136, 0.12);
+}
+
+.action-cell {
+  min-width: 118px;
 }
 
 .row-actions {
   display: inline-flex;
+  flex-direction: column;
   align-items: center;
   justify-content: flex-end;
-  gap: 12px;
+  gap: 4px;
+  min-width: 112px;
+}
+
+.link-button {
+  font-size: 0.68rem;
+  line-height: 1.35;
+  white-space: nowrap;
 }
 
 .link-button-danger {
