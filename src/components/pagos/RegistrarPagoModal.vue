@@ -43,13 +43,33 @@
               />
             </div>
 
-            <button type="button" class="selected-athlete" @click="selectAthlete">
-              <span class="athlete-avatar">SP</span>
+            <div v-if="search.trim()" class="athlete-results" role="listbox" aria-label="Resultados de deportistas">
+              <button
+                v-for="athlete in filteredAthletes"
+                :key="athlete.id"
+                type="button"
+                class="athlete-result"
+                :class="{ 'is-selected': selectedAthlete && selectedAthlete.id === athlete.id }"
+                role="option"
+                :aria-selected="selectedAthlete && selectedAthlete.id === athlete.id"
+                @click="selectAthlete(athlete)"
+              >
+                <span class="athlete-avatar" :style="{ backgroundColor: athlete.avatarColor }">{{ athlete.initials }}</span>
+                <span class="athlete-main">
+                  <strong>{{ athlete.name }}</strong>
+                  <small>ID {{ athlete.id }} · Acudiente: {{ athlete.guardian }}</small>
+                </span>
+              </button>
+              <p v-if="!filteredAthletes.length" class="athlete-empty">No se encontraron deportistas.</p>
+            </div>
+
+            <button v-if="selectedAthlete" type="button" class="selected-athlete" @click="search = selectedAthlete.name">
+              <span class="athlete-avatar" :style="{ backgroundColor: selectedAthlete.avatarColor }">{{ selectedAthlete.initials }}</span>
               <span class="athlete-main">
-                <strong>Sara Sepúlveda</strong>
-                <small>Juvenil · San Valentín</small>
+                <strong>{{ selectedAthlete.name }}</strong>
+                <small>{{ selectedAthlete.category }} · {{ selectedAthlete.site }}</small>
               </span>
-              <span class="athlete-balance">Saldo pendiente <strong>$ 0</strong></span>
+              <span class="athlete-balance">Saldo pendiente <strong>{{ selectedAthlete.balance }}</strong></span>
             </button>
 
             <div class="payment-step">
@@ -98,13 +118,13 @@
                 <label for="payment-amount">Valor recibido</label>
                 <div class="currency-input">
                   <span>$</span>
-                  <input id="payment-amount" type="text" value="65000" inputmode="numeric" />
+                  <input id="payment-amount" v-model="paymentAmount" type="text" inputmode="numeric" />
                 </div>
               </div>
 
               <div class="form-field">
                 <label for="payment-method">Medio de pago</label>
-                <select id="payment-method">
+                <select id="payment-method" v-model="paymentMethod">
                   <option selected>Efectivo</option>
                   <option>Transferencia</option>
                   <option>Nequi</option>
@@ -125,7 +145,7 @@
 
             <div class="modal-actions">
               <button type="button" class="btn btn-secondary" @click="close">Cancelar</button>
-              <button type="button" class="btn btn-primary" @click="confirmReceipt">Confirmar y generar recibo</button>
+              <button type="button" class="btn btn-primary" :disabled="!selectedAthlete" @click="confirmReceipt">Confirmar y generar recibo</button>
             </div>
           </div>
         </template>
@@ -163,7 +183,7 @@
               </div>
               <div class="receipt-summary-item">
                 <span>Deportista</span>
-                <strong>Sara Sepúlveda</strong>
+                <strong>{{ selectedAthlete.name }}</strong>
               </div>
               <div class="receipt-summary-item">
                 <span>Sede</span>
@@ -186,7 +206,7 @@
             <div class="receipt-payment-grid">
               <div class="receipt-payment-row">
                 <span>Medio de pago</span>
-                <strong>Efectivo</strong>
+                <strong>{{ paymentMethod }}</strong>
               </div>
               <div class="receipt-payment-row">
                 <span>Saldo pendiente</span>
@@ -194,7 +214,7 @@
               </div>
               <div class="receipt-payment-row total-row">
                 <span>Total recibido</span>
-                <strong>$ 65.000</strong>
+                <strong>$ {{ Number(paymentAmount.replace(/\D/g, '') || 0).toLocaleString('es-CO') }}</strong>
               </div>
             </div>
 
@@ -220,18 +240,52 @@
 </template>
 
 <script setup>
-import { nextTick, onMounted, ref } from 'vue';
+import { computed, nextTick, onMounted, ref } from 'vue';
 
-const emit = defineEmits(['close']);
+const emit = defineEmits(['close', 'saved']);
 const modalElement = ref(null);
 const search = ref('');
 const showReceipt = ref(false);
+const paymentAmount = ref('65000');
+const paymentMethod = ref('Efectivo');
+const athletes = [
+  { id: '100241', name: 'Salomé Solórzano', initials: 'SS', category: 'Mini', site: 'San Valentín', guardian: 'Laura Solórzano', balance: '$ 65.000', avatarColor: '#d95c82' },
+  { id: '100242', name: 'Sara Sepúlveda', initials: 'SP', category: 'Juvenil', site: 'San Valentín', guardian: 'Carlos Sepúlveda', balance: '$ 0', avatarColor: '#de9d4b' },
+  { id: '100243', name: 'Samuel Hinestroza', initials: 'SH', category: 'Infantil', site: 'San Valentín', guardian: 'María Hinestroza', balance: '$ 0', avatarColor: '#3b7bb1' },
+  { id: '100244', name: 'Valentina García', initials: 'VG', category: 'Premini', site: 'San Valentín', guardian: 'Mónica García', balance: '$ 110.000', avatarColor: '#7b5fc8' },
+  { id: '100245', name: 'Martín Rojas', initials: 'MR', category: 'Mini', site: 'San Valentín', guardian: 'Diana Rojas', balance: '$ 0', avatarColor: '#1f9d5b' },
+  { id: '100246', name: 'Luciana Pérez', initials: 'LP', category: 'Infantil', site: 'San Valentín', guardian: 'Andrés Pérez', balance: '$ 45.000', avatarColor: '#c47a65' }
+];
+const selectedAthlete = ref(null);
 
-function selectAthlete() {
-  search.value = 'Sara Sepúlveda';
+const filteredAthletes = computed(() => {
+  const query = normalize(search.value);
+
+  return athletes.filter((athlete) => {
+    return [athlete.name, athlete.id, athlete.guardian].some((value) => normalize(value).includes(query));
+  });
+});
+
+function selectAthlete(athlete) {
+  selectedAthlete.value = athlete;
+  search.value = '';
+}
+
+function normalize(value) {
+  return value.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
 }
 
 function confirmReceipt() {
+  if (!selectedAthlete.value) {
+    return;
+  }
+
+  emit('saved', {
+    deportista: selectedAthlete.value.name,
+    concepto: 'Mensualidad',
+    medio: paymentMethod.value,
+    amount: Number(paymentAmount.value.replace(/\D/g, '')) || 0
+  });
   showReceipt.value = true;
 }
 
@@ -343,6 +397,45 @@ onMounted(async () => {
 
 .payment-search {
   margin-bottom: 16px;
+}
+
+.athlete-results {
+  max-height: 220px;
+  overflow-y: auto;
+  margin-top: -8px;
+  margin-bottom: 16px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+}
+
+.athlete-result {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border: 0;
+  border-bottom: 1px solid var(--color-border);
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+}
+
+.athlete-result:last-child {
+  border-bottom: 0;
+}
+
+.athlete-result:hover,
+.athlete-result.is-selected {
+  background: #f5f8fd;
+}
+
+.athlete-empty {
+  margin: 0;
+  padding: 14px;
+  color: var(--color-text-muted);
+  font-size: 0.88rem;
 }
 
 .search-box {

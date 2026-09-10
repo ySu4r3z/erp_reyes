@@ -94,7 +94,11 @@
     </div>
   </section>
 
-  <RegistrarPagoModal v-if="isPaymentModalOpen" @close="isPaymentModalOpen = false" />
+  <RegistrarPagoModal
+    v-if="isPaymentModalOpen"
+    @close="isPaymentModalOpen = false"
+    @saved="addMovement"
+  />
 </template>
 
 <script setup>
@@ -103,10 +107,33 @@ import RegistrarPagoModal from '../components/pagos/RegistrarPagoModal.vue';
 
 const isPaymentModalOpen = ref(false);
 
-const movements = [
+const movements = ref([
   { id: '#0507', date: '20 jul. 2026', deportista: 'Salomé Solórzano', concepto: 'Inscripción + mensualidad', medio: 'Efectivo', total: '$85.000' },
   { id: '#0511', date: '20 jul. 2026', deportista: 'Sara Sepúlveda', concepto: 'Mensualidades + compartimento', medio: 'Transferencia', total: '$305.000' },
   { id: '#0501', date: '20 jul. 2026', deportista: 'Samuel Hinesroza', concepto: '3 mensualidades', medio: 'Transferencia', total: '$150.000' },
   { id: '#0500', date: '19 jul. 2026', deportista: 'Martín Rojas', concepto: 'Mensualidad', medio: 'Efectivo', total: '$65.000' }
-];
+]);
+
+function addMovement(payment) {
+  const highestReceipt = movements.value.reduce((highest, movement) => {
+    return Math.max(highest, Number(movement.id.replace('#', '')) || 0);
+  }, 0);
+
+  movements.value.unshift({
+    id: `#${String(highestReceipt + 1).padStart(4, '0')}`,
+    date: new Intl.DateTimeFormat('es-CO', {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric'
+    }).format(new Date()),
+    deportista: payment.deportista,
+    concepto: payment.concepto,
+    medio: payment.medio,
+    total: formatCurrency(payment.amount)
+  });
+}
+
+function formatCurrency(amount) {
+  return `$${amount.toLocaleString('es-CO')}`;
+}
 </script>
